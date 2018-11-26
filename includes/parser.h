@@ -6,7 +6,7 @@
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 10:50:01 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/26 15:09:07 by bdevessi         ###   ########.fr       */
+/*   Updated: 2018/11/26 15:27:46 by bdevessi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 typedef struct	s_tetrimino
 {
 	uint16_t	data;
+	uint16_t	x;
+	uint16_t	y;
 }				t_etrimino;
 
 t_etrimino		*parse_fd(const int fd);
