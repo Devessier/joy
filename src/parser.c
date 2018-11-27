@@ -6,7 +6,7 @@
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 10:53:13 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/26 15:09:37 by bdevessi         ###   ########.fr       */
+/*   Updated: 2018/11/27 15:16:11 by bdevessi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,18 @@
 #include <stdio.h>
 
 void		normalize_tetrimino(t_etrimino *tetrimino);
+
+void		dimensions_tetrimino(t_etrimino *t)
+{
+	t->width = !!(t->data & 0x8888)
+		+ !!(t->data & 0x4444)
+		+ !!(t->data & 0x2222)
+		+ !!(t->data & 0x1111);
+	t->height = !!(t->data & 0xF000)
+		+ !!(t->data & 0xF00)
+		+ !!(t->data & 0xF0)
+		+ !!(t->data & 0xF);
+}
 
 int			invoke_tetrimino(t_etrimino *tetrimino, t_reader *reader, int fd)
 {
@@ -42,6 +54,7 @@ int			invoke_tetrimino(t_etrimino *tetrimino, t_reader *reader, int fd)
 		}
 	}
 	normalize_tetrimino(tetrimino);
+	dimensions_tetrimino(tetrimino);
 	return (0);
 }
 
@@ -50,6 +63,7 @@ t_etrimino	*parse_fd(const int fd)
 	static t_etrimino	tetriminos[MAX_TETRIMINOS];
 	unsigned char		index;
 	t_reader			reader;
+
 	char				c;
 
 	rd_init(&reader);

@@ -6,7 +6,7 @@
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 13:15:11 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/26 17:01:11 by bdevessi         ###   ########.fr       */
+/*   Updated: 2018/11/27 17:08:30 by bdevessi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,54 +31,29 @@ void		normalize_tetrimino(t_etrimino *tetrimino)
 	tetrimino->data <<= 15 - pow;
 }
 
-int check_tetrimino(uint8_t *map, uint16_t size, t_etrimino *tetrimino)
+int			check_tetrimino(uint8_t *map, uint16_t s, t_etrimino *t)
 {
-	uint32_t	bits;
-	uint8_t		*omap;
-
-	bits = tetrimino->data;
-	map += (tetrimino->y * size + tetrimino->x) / 8;
-	omap = map;
-	bits >>= tetrimino->x % 8;
-	if(*(uint32_t *)map & (bits & 0xF000) >> 8)
-		return (0);
-	map = omap + size / 8;
-	if(*(uint32_t *)map & (bits & 0xF00) >> (4 + size % 8))
-		return (0);
-	map = omap + (size * 2) / 8;
-	if(*(uint32_t *)map & (bits & 0xF0) >> (size * 2 % 8))
-		return (0);
-	map = omap + (size * 3) / 8;
-	if(*(uint32_t *)map & (bits & 0xF) >> (size * 3 % 8 - 4))
-		return (0);
-	return (1);
+	return (test_bits(map, t->y * s + t->x, ((t->data >> 12) & 0xF) << 4)
+	|| test_bits(map, (t->y + 1) * s + t->x, ((t->data >> 8) & 0xF) << 4)
+	|| test_bits(map, (t->y + 2) * s + t->x, ((t->data >> 4) & 0xF) << 4)
+	|| test_bits(map, (t->y + 3) * s + t->x, (t->data & 0xF) << 4));
 }
 
-void place_tetrimino(uint8_t *map, uint16_t size, t_etrimino *tetrimino)
+void		place_tetrimino(uint8_t *map, uint16_t size, t_etrimino *t)
 {
-	uint32_t	bits;
-	uint8_t		*omap;
-
-	bits = tetrimino->data;
-	map += (tetrimino->y * size + tetrimino->x) / 8;
-	omap = map;
-	bits >>= tetrimino->x % 8;
-	*(uint32_t *)map ^= (bits & 0xF000) >> 8;
-	map = omap + size / 8;
-	*(uint32_t *)map ^= (bits & 0xF00) >> (4 + size % 8);
-	map = omap + (size * 2) / 8;
-	*(uint32_t *)map ^= (bits & 0xF0) >> (size * 2 % 8);
-	map = omap + (size * 3) / 8;
-	*(uint32_t *)map ^= (bits & 0xF) >> (size * 3 % 8 - 4);
+	place_bits(map, t->y * size + t->x, ((t->data >> 12) & 0xF) << 4);
+	place_bits(map, (t->y + 1) * size + t->x, ((t->data >> 8) & 0xF) << 4);
+	place_bits(map, (t->y + 2) * size + t->x, ((t->data >> 4) & 0xF) << 4);
+	place_bits(map, (t->y + 3) * size + t->x, (t->data & 0xF) << 4);
 }
 
 int			try_place(uint8_t *map, uint16_t size, t_etrimino *tetrimino)
 {
 	if (!tetrimino->data)
 		return (1);
-	while (tetrimino->y < size)
+	while (tetrimino->y + tetrimino->height <= size)
 	{
-		if (check_tetrimino(map, size, tetrimino))
+		if (!check_tetrimino(map, size, tetrimino))
 		{
 			place_tetrimino(map, size, tetrimino);
 			if (try_place(map, size, tetrimino + 1))
@@ -86,41 +61,49 @@ int			try_place(uint8_t *map, uint16_t size, t_etrimino *tetrimino)
 			place_tetrimino(map, size, tetrimino);
 		}
 		tetrimino->x++;
-		if (tetrimino->x == size)
+		if (tetrimino->x + tetrimino->width > size)
 		{
 			tetrimino->x = 0;
 			tetrimino->y++;
 		}
 	}
+	tetrimino->x = 0;
+	tetrimino->y = 0;
 	return (0);
 }
 #include <string.h>
 
 void		print(t_etrimino *tetriminos, uint16_t size)
 {
-	uint8_t map[4096];
-	uint8_t	y;
-	uint8_t	x;
-	uint8_t	i;
-	uint8_t	line;
+	uint8_t		map[4096];
+	uint8_t		i;
+	uint8_t		j;
+	uint16_t	shift;
+	uint8_t		line;
 
 	size++;
 	i = 0;
-	memset(map, '.', sizeof(map));
 	while (tetriminos[i].data)
 	{
-		y = MAX_HEIGHT;
-		while (y)
+		j = 0;
+		printf("data : %d %d %d | #%i#\n", tetriminos[i].data, tetriminos[i].x, tetriminos[i].y, i);
+		shift = 0xF000;
+		while (shift)
 		{
-			map[y * size]= '\n';
-			line = tetriminos[i].data >> (--y * 4) & 0xF;
-			x = LINE_LEN;
-			while (x)
-				if (line & 1 << --x)
-	 				map[(tetriminos[i].y + y) * size + tetriminos[i].x + 4 - x] = 'A' + i;
+			line = tetriminos[i].data & shift;
+			if ()
+			{
+				printf("index : %d\n", tetriminos[i].y * size + tetriminos[i].x + j);
+				map[tetriminos[i].y * size + tetriminos[i].x + j] = 'A' + i;
+			}
+			shift >>= 1;
+			j++;
 		}
 		i++;
 	}
+	i = 0;
+	while (i < size)
+		map[i++ * size]= '\n';
 	write(1, map + 1, size * (size - 1));
 }
 
@@ -128,8 +111,13 @@ void		solve(t_etrimino *tetriminos)
 {
 	uint8_t map[4096] = { 0 };
 	uint16_t size;
-
 	size = 4;
+	place_tetrimino(map, size, tetriminos);
+	printf("%d|%d\n", *map, map[1]);
+	printf("w : %d | h : %d\n", tetriminos->width, tetriminos->height);
+	printf("%d\n", check_tetrimino(map, size, tetriminos));
+	place_tetrimino(map, size, tetriminos);
+	printf("%d\n", check_tetrimino(map, size, tetriminos));
 	while (!try_place(map, size, tetriminos))
 		size++;
 	printf("Size: %d\n", size);

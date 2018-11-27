@@ -6,7 +6,7 @@
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 12:05:03 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/26 15:01:50 by bdevessi         ###   ########.fr       */
+/*   Updated: 2018/11/27 15:43:53 by bdevessi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,16 @@ uint8_t		ft_log2(uint16_t v)
 		i--;
 	}
 	return (r);
+}
+
+void		place_bits(uint8_t *data, size_t pos, uint8_t to_place)
+{
+	data[pos / 8] ^= to_place >> (pos % 8);
+	data[pos / 8 + 1] ^= to_place << (8 - (pos % 8));
+}
+
+int			test_bits(uint8_t *data, size_t pos, uint8_t to_test)
+{
+	return (data[pos / 8] & (to_test >> (pos % 8))
+		|| data[pos / 8 + 1] & (to_test << (8 - (pos % 8))));
 }
