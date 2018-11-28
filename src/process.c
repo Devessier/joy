@@ -6,7 +6,7 @@
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 13:15:11 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/28 12:15:04 by bdevessi         ###   ########.fr       */
+/*   Updated: 2018/11/28 14:13:59 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ int			try_place(uint8_t *map, uint16_t size, t_etrimino *tetrimino)
 {
 	if (!tetrimino->data)
 		return (1);
+	if (size < tetrimino->width || size < tetrimino->height)
+		return (0);
 	while (tetrimino->y + tetrimino->height <= size)
 	{
 		if (!check_tetrimino(map, size, tetrimino))
@@ -107,15 +109,8 @@ void		solve(t_etrimino *tetriminos)
 {
 	uint8_t map[4096] = { 0 };
 	uint16_t size;
-	size = 4;
-	place_tetrimino(map, size, tetriminos);
-	printf("%d|%d\n", *map, map[1]);
-	printf("w : %d | h : %d\n", tetriminos->width, tetriminos->height);
-	printf("%d\n", check_tetrimino(map, size, tetriminos));
-	place_tetrimino(map, size, tetriminos);
-	printf("%d\n", check_tetrimino(map, size, tetriminos));
+	size = 2;
 	while (!try_place(map, size, tetriminos))
 		size++;
-	printf("Size: %d\n", size);
 	print(tetriminos, size);
 }
