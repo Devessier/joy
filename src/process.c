@@ -6,7 +6,7 @@
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 13:15:11 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/28 12:09:36 by bdevessi         ###   ########.fr       */
+/*   Updated: 2018/11/28 12:15:04 by bdevessi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void		print(t_etrimino *tetriminos, uint16_t size)
 	uint8_t		map[4096];
 	uint8_t		i;
 	int8_t		j;
-	int16_t		shift;
+	int8_t		shift;
 	uint8_t		line;
 
 	size++;
