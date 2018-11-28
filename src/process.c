@@ -6,7 +6,7 @@
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 13:15:11 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/27 17:08:30 by bdevessi         ###   ########.fr       */
+/*   Updated: 2018/11/28 12:09:36 by bdevessi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,27 +77,23 @@ void		print(t_etrimino *tetriminos, uint16_t size)
 {
 	uint8_t		map[4096];
 	uint8_t		i;
-	uint8_t		j;
-	uint16_t	shift;
+	int8_t		j;
+	int16_t		shift;
 	uint8_t		line;
 
 	size++;
 	i = 0;
+	memset(map, '.', sizeof(map));
 	while (tetriminos[i].data)
 	{
-		j = 0;
-		printf("data : %d %d %d | #%i#\n", tetriminos[i].data, tetriminos[i].x, tetriminos[i].y, i);
-		shift = 0xF000;
-		while (shift)
+		shift = 4;
+		while (--shift >= 0)
 		{
-			line = tetriminos[i].data & shift;
-			if ()
-			{
-				printf("index : %d\n", tetriminos[i].y * size + tetriminos[i].x + j);
-				map[tetriminos[i].y * size + tetriminos[i].x + j] = 'A' + i;
-			}
-			shift >>= 1;
-			j++;
+			line = (tetriminos[i].data & (0xF << (4 * shift))) >> (4 * shift);
+			j = 4;
+			while (--j >= 0)
+				if ((line & (1 << j)) >> j)
+					map[(tetriminos[i].y + (3 - shift)) * size + tetriminos[i].x + 4 - j] = 'A' + i;
 		}
 		i++;
 	}
