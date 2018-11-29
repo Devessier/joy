@@ -6,14 +6,13 @@
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 10:53:13 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/29 10:09:52 by bdevessi         ###   ########.fr       */
+/*   Updated: 2018/11/29 11:47:55 by bdevessi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "reader.h"
 #include "utils.h"
-#include "errors.h"
 #include "solve.h"
 
 void		dimensions_tetrimino(t_etrimino *t)
@@ -26,6 +25,34 @@ void		dimensions_tetrimino(t_etrimino *t)
 		+ !!(t->data & 0xF00)
 		+ !!(t->data & 0xF0)
 		+ !!(t->data & 0xF);
+}
+
+int			is_valid_tetrimino(t_etrimino *t)
+{
+	uint8_t		i;
+	uint8_t		count;
+	uint8_t		links;
+	uint16_t	neighbors;
+
+	i = 0;
+	count = 0;
+	links = 0;
+	neighbors = 0;
+	while (i < 16 && count <= 4)
+	{
+		if ((t->data >> i) & 1)
+		{
+			if (i >= 4)
+				neighbors = (t->data & (0b100101001 << (i - 4))) >> (i - 4);
+			else
+				neighbors = (t->data & (0b100101001 >> (4 - i))) << (4 - i);
+			links += !!(neighbors & 0b1) + !!(neighbors & 0b1000);
+			links += !!(neighbors & 0b100000) + !!(neighbors & 0b100000000);
+			count++;
+		}
+		i++;
+	}
+	return (t->data >> i == 0 && links >= 6);
 }
 
 int			invoke_tetrimino(t_etrimino *tetrimino, t_reader *reader, int fd)
@@ -54,56 +81,28 @@ int			invoke_tetrimino(t_etrimino *tetrimino, t_reader *reader, int fd)
 	}
 	normalize_tetrimino(tetrimino);
 	dimensions_tetrimino(tetrimino);
-	return (0);
+	return (!is_valid_tetrimino(tetrimino));
 }
 
-t_etrimino	*parse_fd(const int fd)
+t_etrimino	*parse_fd(const int fd, uint8_t *index)
 {
-	static t_etrimino	tetriminos[MAX_TETRIMINOS];
-	unsigned char		index;
+	static t_etrimino	tetriminos[MAX_TETRIMINOS + 1];
 	t_reader			reader;
 	char				c;
 
 	rd_init(&reader);
-	index = 0;
-	while (index < MAX_TETRIMINOS)
+	*index = 0;
+	while (*index < MAX_TETRIMINOS)
 	{
-		if (invoke_tetrimino(&tetriminos[index], &reader, fd))
+		if (invoke_tetrimino(&tetriminos[*index], &reader, fd))
 			return (NULL);
 		if (!rd_get_chars(&reader, fd, &c, 1))
 			return (tetriminos);
 		if (c != '\n')
 			return (NULL);
-		index++;
+		(*index)++;
 	}
+	if (rd_get_chars(&reader, fd, &c, 1) != 0)
+		return (NULL);
 	return (tetriminos);
-}
-
-void		print_parsed_bitmap(t_etrimino *tetriminos)
-{
-	unsigned char	i;
-	char			line;
-	char			shift;
-	uint16_t		tetri;
-	char			y;
-
-	if (!tetriminos)
-		print_error();
-	i = 0;
-	while (i < MAX_TETRIMINOS)
-	{
-		if (!(tetri = tetriminos[i].data))
-			return ;
-		y = MAX_HEIGHT;
-		while (y)
-		{
-			line = tetriminos[i].data >> (--y * 4) & 0xF;
-			shift = 1 << 3;
-			while (shift)
-				write(1, line & ((shift >>= 1) << 1) ? "#" : ".", 1);
-			write(1, "\n", 1);
-		}
-		write(1, "\n", 1);
-		i++;
-	}
 }

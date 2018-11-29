@@ -6,7 +6,7 @@
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/29 10:01:20 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/29 10:21:52 by bdevessi         ###   ########.fr       */
+/*   Updated: 2018/11/29 12:12:05 by bdevessi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,14 +75,16 @@ int			try_place(uint8_t *map, uint16_t size, t_etrimino *tetrimino)
 	return (0);
 }
 
-void		solve(t_etrimino *tetriminos)
+uint16_t	solve(t_etrimino *tetriminos, uint8_t nb_tet)
 {
 	uint8_t		map[4096];
 	uint16_t	size;
 
 	ft_memset(map, 0, 4096);
 	size = 2;
+	while (size * size < nb_tet * 4)
+		size++;
 	while (!try_place(map, size, tetriminos))
 		size++;
-	print(tetriminos, size);
+	return (size);
 }

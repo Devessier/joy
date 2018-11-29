@@ -6,13 +6,33 @@
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/29 10:18:18 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/29 10:24:36 by bdevessi         ###   ########.fr       */
+/*   Updated: 2018/11/29 12:07:08 by bdevessi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "utils.h"
 #include <unistd.h>
+
+int			ft_sqrt(int nb)
+{
+	int		curr;
+	float	tmp;
+	int		last;
+
+	if (nb <= 0)
+		return (0);
+	curr = nb / 2;
+	last = -1;
+	tmp = curr;
+	while (curr != last)
+	{
+		last = curr;
+		tmp = 0.5 * ((float)last + (float)nb / (float)last);
+		curr = tmp;
+	}
+	return (curr);
+}
 
 static void	fill_with_newlines(uint8_t *map, uint16_t size)
 {

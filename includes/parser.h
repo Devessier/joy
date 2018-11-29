@@ -6,7 +6,7 @@
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 10:50:01 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/27 14:51:53 by bdevessi         ###   ########.fr       */
+/*   Updated: 2018/11/29 11:48:24 by bdevessi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ typedef struct	s_tetrimino
 	uint16_t	width;
 }				t_etrimino;
 
-t_etrimino		*parse_fd(const int fd);
-void			print_parsed_bitmap(t_etrimino *tetriminos);
+t_etrimino		*parse_fd(const int fd, uint8_t *size);
 
 #endif
