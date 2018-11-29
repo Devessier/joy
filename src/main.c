@@ -6,7 +6,7 @@
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 12:00:19 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/28 14:22:37 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2018/11/29 10:04:41 by bdevessi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 #include "utils.h"
 #include <fcntl.h>
 #include <unistd.h>
-#include <stdio.h>
 #include "solve.h"
+#include "errors.h"
 
 int		main(int argc, char **argv)
 {
@@ -29,6 +29,5 @@ int		main(int argc, char **argv)
 	if (!tetriminos)
 		print_error();
 	solve(tetriminos);
-//	print_parsed_bitmap(tetriminos);
 	close(fd);
 }

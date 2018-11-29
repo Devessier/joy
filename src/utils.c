@@ -6,18 +6,12 @@
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 12:05:03 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/27 15:43:53 by bdevessi         ###   ########.fr       */
+/*   Updated: 2018/11/29 10:03:48 by bdevessi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 #include <unistd.h>
-
-void		print_error(void)
-{
-	write(1, "error\n", 6);
-	exit(1);
-}
 
 uint8_t		ft_log2(uint16_t v)
 {
@@ -50,4 +44,22 @@ int			test_bits(uint8_t *data, size_t pos, uint8_t to_test)
 {
 	return (data[pos / 8] & (to_test >> (pos % 8))
 		|| data[pos / 8 + 1] & (to_test << (8 - (pos % 8))));
+}
+
+void		*ft_memset(void *s, int c, size_t n)
+{
+	while (n--)
+		((unsigned char *)s)[n] = c;
+	return (s);
+}
+
+void		*ft_memcpy(void *dst, const void *src, size_t n)
+{
+	const char	*c_src = src;
+	char		*c_dst;
+
+	c_dst = dst;
+	while (n--)
+		*c_dst++ = *c_src++;
+	return (dst);
 }

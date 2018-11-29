@@ -6,16 +6,15 @@
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 10:53:13 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/27 15:16:11 by bdevessi         ###   ########.fr       */
+/*   Updated: 2018/11/29 10:09:52 by bdevessi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "reader.h"
 #include "utils.h"
-#include <stdio.h>
-
-void		normalize_tetrimino(t_etrimino *tetrimino);
+#include "errors.h"
+#include "solve.h"
 
 void		dimensions_tetrimino(t_etrimino *t)
 {
@@ -63,7 +62,6 @@ t_etrimino	*parse_fd(const int fd)
 	static t_etrimino	tetriminos[MAX_TETRIMINOS];
 	unsigned char		index;
 	t_reader			reader;
-
 	char				c;
 
 	rd_init(&reader);
@@ -94,8 +92,7 @@ void		print_parsed_bitmap(t_etrimino *tetriminos)
 	i = 0;
 	while (i < MAX_TETRIMINOS)
 	{
-		tetri = tetriminos[i].data;
-		if (!tetri)
+		if (!(tetri = tetriminos[i].data))
 			return ;
 		y = MAX_HEIGHT;
 		while (y)
@@ -103,10 +100,7 @@ void		print_parsed_bitmap(t_etrimino *tetriminos)
 			line = tetriminos[i].data >> (--y * 4) & 0xF;
 			shift = 1 << 3;
 			while (shift)
-			{
-				write(1, line & shift ? "#" : ".", 1);
-				shift >>= 1;
-			}
+				write(1, line & ((shift >>= 1) << 1) ? "#" : ".", 1);
 			write(1, "\n", 1);
 		}
 		write(1, "\n", 1);

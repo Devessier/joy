@@ -1,17 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   process.c                                          :+:      :+:    :+:   */
+/*   solve.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/26 13:15:11 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/28 14:13:59 by dde-jesu         ###   ########.fr       */
+/*   Created: 2018/11/29 10:01:20 by bdevessi          #+#    #+#             */
+/*   Updated: 2018/11/29 10:21:52 by bdevessi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 #include "parser.h"
+#include "print.h"
 #include <stdio.h>
 #include <unistd.h>
 
@@ -73,42 +74,13 @@ int			try_place(uint8_t *map, uint16_t size, t_etrimino *tetrimino)
 	tetrimino->y = 0;
 	return (0);
 }
-#include <string.h>
-
-void		print(t_etrimino *tetriminos, uint16_t size)
-{
-	uint8_t		map[4096];
-	uint8_t		i;
-	int8_t		j;
-	int8_t		shift;
-	uint8_t		line;
-
-	size++;
-	i = 0;
-	memset(map, '.', sizeof(map));
-	while (tetriminos[i].data)
-	{
-		shift = 4;
-		while (--shift >= 0)
-		{
-			line = (tetriminos[i].data & (0xF << (4 * shift))) >> (4 * shift);
-			j = 4;
-			while (--j >= 0)
-				if ((line & (1 << j)) >> j)
-					map[(tetriminos[i].y + (3 - shift)) * size + tetriminos[i].x + 4 - j] = 'A' + i;
-		}
-		i++;
-	}
-	i = 0;
-	while (i < size)
-		map[i++ * size]= '\n';
-	write(1, map + 1, size * (size - 1));
-}
 
 void		solve(t_etrimino *tetriminos)
 {
-	uint8_t map[4096] = { 0 };
-	uint16_t size;
+	uint8_t		map[4096];
+	uint16_t	size;
+
+	ft_memset(map, 0, 4096);
 	size = 2;
 	while (!try_place(map, size, tetriminos))
 		size++;
