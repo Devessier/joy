@@ -6,17 +6,15 @@
 #    By: dde-jesu <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/06 16:01:17 by dde-jesu          #+#    #+#              #
-#    Updated: 2018/11/29 12:02:09 by bdevessi         ###   ########.fr        #
+#    Updated: 2018/11/30 11:23:04 by bdevessi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME=fillit
-CFLAGS=-Wall -Werror -Wextra -Iincludes
+CFLAGS=-Wall -Werror -Wextra
 CC=gcc
 
-SRCS = src/main.c src/parser.c \
-	   src/solve.c src/reader.c \
-	   src/utils.c src/print.c
+SRCS = main.c parser.c solve.c reader.c utils.c print.c
 
 OBJS=$(SRCS:.c=.o)
 
@@ -34,6 +32,5 @@ fclean: clean
 	rm -rf $(NAME)
 
 re: fclean $(NAME)
-
 
 .PHONY: clean fclean re proto

@@ -6,7 +6,7 @@
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/29 10:18:18 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/29 12:25:04 by bdevessi         ###   ########.fr       */
+/*   Updated: 2018/11/30 11:20:06 by bdevessi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,10 @@ void		print(t_etrimino *tetriminos, uint16_t size)
 		shift = 4;
 		while (--shift >= 0)
 		{
-			line = (tetriminos[i].data & (0xF << (4 * shift))) >> (4 * shift);
+			line = (tetriminos[i].data >> (4 * shift)) & 0xF;
 			j = 4;
 			while (--j >= 0)
-				if ((line & (1 << j)) >> j)
+				if ((line >> j) & 1)
 					map[(tetriminos[i].y + (3 - shift))
 						* size + tetriminos[i].x + 4 - j] = 'A' + i;
 		}

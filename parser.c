@@ -6,7 +6,7 @@
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 10:53:13 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/29 11:47:55 by bdevessi         ###   ########.fr       */
+/*   Updated: 2018/11/30 11:18:45 by bdevessi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,20 +68,20 @@ int			invoke_tetrimino(t_etrimino *tetrimino, t_reader *reader, int fd)
 		x = 0;
 		read_bytes = rd_get_chars(reader, fd, tab, LINE_LEN + 1);
 		if (read_bytes != LINE_LEN + 1 || tab[LINE_LEN] != '\n')
-			return (1);
+			return (0);
 		while (x < LINE_LEN)
 		{
 			if (tab[x] == '#')
 				tetrimino->data |= shift;
 			else if (tab[x] != '.')
-				return (1);
+				return (0);
 			shift >>= 1;
 			x++;
 		}
 	}
 	normalize_tetrimino(tetrimino);
 	dimensions_tetrimino(tetrimino);
-	return (!is_valid_tetrimino(tetrimino));
+	return (is_valid_tetrimino(tetrimino));
 }
 
 t_etrimino	*parse_fd(const int fd, uint8_t *index)
@@ -94,7 +94,7 @@ t_etrimino	*parse_fd(const int fd, uint8_t *index)
 	*index = 0;
 	while (*index < MAX_TETRIMINOS)
 	{
-		if (invoke_tetrimino(&tetriminos[*index], &reader, fd))
+		if (!invoke_tetrimino(&tetriminos[*index], &reader, fd))
 			return (NULL);
 		if (!rd_get_chars(&reader, fd, &c, 1))
 			return (tetriminos);
