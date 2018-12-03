@@ -6,7 +6,7 @@
 /*   By: bdevessi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 10:53:13 by bdevessi          #+#    #+#             */
-/*   Updated: 2018/11/30 11:18:45 by bdevessi         ###   ########.fr       */
+/*   Updated: 2018/12/03 09:50:09 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int			is_valid_tetrimino(t_etrimino *t)
 		}
 		i++;
 	}
-	return (t->data >> i == 0 && links >= 6);
+	return (count == 4 && links >= 6);
 }
 
 int			invoke_tetrimino(t_etrimino *tetrimino, t_reader *reader, int fd)
